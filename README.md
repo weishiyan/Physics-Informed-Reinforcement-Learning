@@ -9,11 +9,11 @@
 ## Installing 
 * Pull code from repo
 ```
-git clone https://gitlab.pnnl.gov/schr476/cdi_capstone_2020.git
+git clone https://github.com/schr476/uw_capstone_2020.git
 ```
-* Install cdi_capstone_2020 (via pip):
+* Install uw_capstone_2020 (via pip):
 ```
-cd cdi_capstone_2020
+cd uw_capstone_2020
 pip install -e . --user
 ```
 ## Directory Organization
