@@ -27,18 +27,18 @@ class DQN:
         #self.sigma = 2 # confidence level
         self.total_actions_taken = 1
         self.individual_action_taken = np.ones(self.env.action_space.n)
-            
+
         ## Setup GPU cfg
-        config = tf.ConfigProto()
+        config = tf.compat.v1.ConfigProto()
         config.gpu_options.allow_growth = True
-        sess = tf.Session(config=config)
-        set_session(sess)
-        
+        sess = tf.compat.v1.Session(config=config)
+        tf.compat.v1.keras.backend.set_session(sess)
+
         ## Get hyper-parameters from json cfg file
         data = []
         with open(cfg) as json_file:
             data = json.load(json_file)
-            
+
         self.search_method =  (data['search_method']).lower() if (data['search_method']) else "epsilon"  # discount rate
         self.search_method = "epsilon"
         self.gamma =  float(data['gamma']) if float(data['gamma']) else 0.95  # discount rate
@@ -65,18 +65,18 @@ class DQN:
         return K.mean(K.sqrt(1+K.square(error))-1,axis=-1)
 
     def _build_model(self):
-        ## Input: state ##       
+        ## Input: state ##
         state_input = Input(self.env.observation_space.shape)
         h1 = Dense(128, activation='relu')(state_input)
         h2 = Dense(256, activation='relu')(h1)
         h3 = Dense(128, activation='relu')(h2)
-        ## Output: action ##   
+        ## Output: action ##
         output = Dense(self.env.action_space.n,activation='relu')(h3)
         model = Model(input=state_input, output=output)
         adam = Adam(lr=self.learning_rate)
         #model.compile(loss='mean_squared_logarithmic_error', optimizer=adam)
         model.compile(loss='mae', optimizer=adam)
-        return model       
+        return model
 
     def remember(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
@@ -106,7 +106,7 @@ class DQN:
             np_state = np.array(state).reshape(1,len(state))
             act_values = self.target_model.predict(np_state)
             action = np.argmax(act_values[0])
-            ## Adding the UCB 
+            ## Adding the UCB
             if self.search_method=="ucb":
                 logger.info('START UCB')
                 logger.info( 'Default values')
@@ -148,41 +148,41 @@ class DQN:
         batch_states = []
         batch_target = []
         for state, action, reward, next_state, done in minibatch:
- 
+
             np_state = np.array(state).reshape(1,len(state))
             np_next_state = np.array(next_state).reshape(1,len(next_state))
-            expectedQ =0 
+            expectedQ =0
             if not done:
                 expectedQ = self.gamma*np.amax(self.target_model.predict(np_next_state)[0])
             target = reward + expectedQ
-            #print('reward %s' % reward)    
-            #print('expectedQ %s' % expectedQ)    
-            #print('target %s' % target)    
+            #print('reward %s' % reward)
+            #print('expectedQ %s' % expectedQ)
+            #print('target %s' % target)
                 #target = max(target,-1)
                 #print ("reward:{},expectedQ:{},target:{}".format(reward,expectedQ,target))
 
             target_f = self.target_model.predict(np_state)
             target_f[0][action] = target
-            
+
             if batch_states==[]:
                 batch_states=np_state
                 batch_target=target_f
             else:
                 batch_states=np.append(batch_states,np_state,axis=0)
                 batch_target=np.append(batch_target,target_f,axis=0)
-                
+
             #history = self.model.fit(np_state, target_f, epochs = 1, verbose = 0)
             #losses.append(history.history['loss'])
         history = self.model.fit(batch_states, batch_target, epochs = 1, verbose = 0)
         losses.append(history.history['loss'][0])
         self.train_writer.writerow([np.mean(losses)])
         self.train_file.flush()
-        
+
         #if len(self.memory)%(self.batch_size)==0:
         if self.target_train_counter%self.target_train_interval == 0:
             logger.info('### TRAINING TARGET MODEL ###')
             self.target_train()
-            
+
         return np.mean(losses)
 
     def target_train(self):
@@ -215,4 +215,3 @@ class DQN:
         self.model.save_weights(self.save_model + name+'.weights.h5')
         self.model.save(self.save_model + name+'.modelall.h5')
         logger.info('### SAVING MODEL '+abspath+'###')
-        
