@@ -105,6 +105,8 @@ if __name__ == "__main__":
                     reward = 1
                 else:
                     reward == 0
+
+            # Only thinking about the pole angle
             elif reward_method=="Normal_Angle":
                 theta=current_state[2]
                 std_theta = env.theta_threshold_radians / 3 # dividing by 3 for 3*sigma
