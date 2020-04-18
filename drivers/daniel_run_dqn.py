@@ -40,14 +40,14 @@ if __name__ == "__main__":
     agent = DQN(env)
 
     ## Save infomation ##
-    reward_method = "None"
+    reward_method = "Step"
     month = time.localtime().tm_mon
     day = time.localtime().tm_mday
     hour = time.localtime().tm_hour
     min = time.localtime().tm_min
     filename = "cartpole_episode%s_memory%s_%s_%s_%s_%s_%s" % \
         (EPISODES, NSTEPS, reward_method, month, day, hour, min)
-    train_file = open(filename, 'w')
+    train_file = open('./data/'+filename, 'w')
     train_writer = csv.writer(train_file, delimiter = " ")
 
     def _normal(std, x):
@@ -58,8 +58,9 @@ if __name__ == "__main__":
         return 1-(1/bins * math.floor(math.fabs(x)/(threshold/bins)))
 
     def _linear(x, threshold):
-        return 1 - (x/threshold)
+        return 1 - (math.fabs(x)/threshold)
 
+    logger.info('Testing ' + reward_method + ' reward method')
     for e in tqdm(range(EPISODES), desc='RL Episodes', leave=True):
         logger.info('Starting new episode: %s' % str(e))
         current_state = env.reset()
@@ -93,6 +94,16 @@ if __name__ == "__main__":
                 theta_reward = _step(bins, theta, theta_threshold)
                 reward = (x_reward + theta_reward) / 2
 
+            # Linear reward map
+            elif reward_method=="Linear":
+                x = current_state[0]
+                theta = current_state[2]
+                x_threshold = env.x_threshold
+                theta_threshold = env.theta_threshold_radians
+                x_reward = _linear(x, x_thrshold)
+                theta_reward = _linear(theta, theta_threshold)
+                reward = (x_reward + theta_reward) / 2
+
             # If the cart and the pole have the same sign, the reward is 1
             elif reward_method=="Same_sign":
                 x = current_state[0]
@@ -108,7 +119,7 @@ if __name__ == "__main__":
 
             # Only thinking about the pole angle
             elif reward_method=="Normal_Angle":
-                theta=current_state[2]
+                theta = current_state[2]
                 std_theta = env.theta_threshold_radians / 3 # dividing by 3 for 3*sigma
                 theta_reward = _normal(std_theta, theta) / _normal(std_theta, 0)
                 reward = theta_reward
@@ -122,7 +133,7 @@ if __name__ == "__main__":
             ##
             current_state = next_state
             ##
-            total_reward+=reward
+            total_reward += reward
 
 
             ## Save memory
@@ -131,5 +142,5 @@ if __name__ == "__main__":
 
         logger.info("Current episode reward: %s " % str(total_reward))
 
-    agent.save('data/'+filename)
+    agent.save(filename+'_agent')
     train_file.close()
