@@ -42,7 +42,7 @@ if __name__ == "__main__":
     agent = DQN(env)
     
     ## Save infomation ##
-    filename = "alexis3_dqn_cartpole_mse_episode%s_memory%s_noMod_" % (str(EPISODES),str(NSTEPS)) #,count)
+    filename = "alexis_dqn_cartpole_mse_episode%s_memory%s_" % (str(EPISODES),str(NSTEPS)) #,count)
     train_file = open(filename, 'w')
     train_writer = csv.writer(train_file, delimiter = " ")
     
