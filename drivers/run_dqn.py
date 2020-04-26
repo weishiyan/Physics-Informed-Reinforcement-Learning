@@ -72,5 +72,5 @@ if __name__ == "__main__":
             train_writer.writerow([current_state,action,reward,next_state,total_reward,done])
             train_file.flush()
        
-    agent.save("%s.h5", %filename)
+    agent.save("%s.h5" % filename)
     train_file.close()
