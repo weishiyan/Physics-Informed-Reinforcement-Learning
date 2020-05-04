@@ -11,6 +11,10 @@ import json
 import math
 
 import tensorflow as tf
+Sequential = tf.keras.models.Sequential
+Dense = tf.keras.layers.Dense
+Adam = tf.keras.optimizers.Adam
+
 from keras.backend.tensorflow_backend import set_session
 
 import logging
@@ -57,15 +61,27 @@ class DQN:
 
     def _build_model(self):
         ## Input: state ##
-        state_input = Input(self.env.observation_space.shape)
-        h1 = Dense(32, activation='relu')(state_input)
-        h2 = Dense(32)(h1)
-        output = Dense(self.env.action_space.n)(h2)
-        model = Model(input=state_input, output=output)
-        adam = Adam(lr=self.learning_rate)
-        model.compile(optimizer=adam,loss='mse')
-        return model
+        state_input = (self.env.observation_space.shape[0])
+        #h1 = Dense(32, activation='relu')(state_input)
+        #h2 = Dense(32)(h1)
+        #output = Dense(self.env.action_space.n)(h2)
+        #model = Model(input=state_input, output=output)
+        #adam = Adam(lr=self.learning_rate)
+        #model.compile(optimizer=adam,loss='mse')
 
+        model = Sequential([
+            Dense(32, input_shape=(state_input,), activation='relu'),
+            Dense(32, activation='relu'),
+            Dense(1, activation='tanh')
+            ]) 
+        model.compile(loss='mse',optimizer=Adam())
+        return model
+    
+    # A.Mills added function
+    def grad_train_model(self, gradients):
+        self.optimizer = Adam(self.learning_rate)
+        self.train_opt = self.optimizer.apply_gradients(zip(gradients,self.model.trainable_variables))
+    
     def remember(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
 
