@@ -1,3 +1,5 @@
 .DS_Store
 agents/__pycache__
 *.pyc
+uw_capstone_2020.egg-info/
+docs/.ipynb_checkpoints/

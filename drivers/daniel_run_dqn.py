@@ -10,7 +10,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger('RL-Logger')
 logger.setLevel(logging.ERROR)
 
-from agents.dqn import DQN
+from agents.daniel_dqn import DQN
 
 import csv
 
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     agent = DQN(env)
 
     ## Save infomation ##
-    reward_method = "Step"
+    reward_method = "Time"
     month = time.localtime().tm_mon
     day = time.localtime().tm_mday
     hour = time.localtime().tm_hour
@@ -49,13 +49,6 @@ if __name__ == "__main__":
         (EPISODES, NSTEPS, reward_method, month, day, hour, min)
     train_file = open('./data/'+filename, 'w')
     train_writer = csv.writer(train_file, delimiter = " ")
-
-    def _normal(std, x):
-        return math.exp(-(x**2)/(2*std**2))/(std*math.sqrt(2*math.pi))
-
-
-    def _step(bin, x, threshold):
-        return 1-(1/bins * math.floor(math.fabs(x)/(threshold/bins)))
 
     def _linear(x, threshold):
         return 1 - (math.fabs(x)/threshold)
@@ -71,60 +64,38 @@ if __name__ == "__main__":
             next_state, reward, done, _ = env.step(action)
 
             # Incorporating environment data in reward structure
-            # Trying out a normal distribution of rewards
-            if reward_method=="Normal":
-                x = current_state[0]
-                theta = current_state[2]
-                std_x = env.x_threshold / 3  # dividing by 3 for 3*sigma
-                std_theta = env.theta_threshold_radians / 3 # dividing by 3 for 3*sigma
-
-                # normalizing the reward to 1
-                x_reward = _normal(std_x, x) / _normal(std_x, 0)
-                theta_reward = _normal(std_theta, theta) / _normal(std_theta, 0)
-                reward = (x_reward + theta_reward) / 2
-
-            # Dividing stepwise regions of x and theta with certain number of bins
-            elif reward_method=="Step":
-                x = current_state[0]
-                theta = current_state[2]
-                x_threshold = env.x_threshold
-                theta_threshold = env.theta_threshold_radians
-                bins = 5
-                x_reward = _step(bins, x, x_threshold)
-                theta_reward = _step(bins, theta, theta_threshold)
-                reward = (x_reward + theta_reward) / 2
-
             # Linear reward map
-            elif reward_method=="Linear":
-                x = current_state[0]
-                theta = current_state[2]
+            # Angle at which to fail the episode
+            # self.theta_threshold_radians = 12 * 2 * math.pi / 360
+            # self.x_threshold = 2.4
+            if reward_method=="Linear":
+                x, x_dot, theta, theta_dot = current_state
                 x_threshold = env.x_threshold
                 theta_threshold = env.theta_threshold_radians
-                x_reward = _linear(x, x_thrshold)
+                x_reward = _linear(x, x_threshold)
                 theta_reward = _linear(theta, theta_threshold)
-                reward = (x_reward + theta_reward) / 2
 
-            # If the cart and the pole have the same sign, the reward is 1
-            elif reward_method=="Same_sign":
-                x = current_state[0]
-                theta = current_state[2]
-                if x < 0 and theta < 0:
-                    reward = 1
-                elif x > 0 and theta > 0:
-                    reward = 1
-                elif x == 0 and theta == 0:
-                    reward = 1
-                else:
-                    reward == 0
+                # Correlation coefficient against total reward
+                reward = 0.426 * x_reward + 0.574 * theta_reward
+            elif reward_method=="Time":
+                x, x_dot, theta, theta_dot = current_state
+                x_threshold = env.x_threshold
+                theta_threshold = env.theta_threshold_radians
+                theta_time = (theta_threshold - math.fabs(theta)) / theta_dot
+                theta_reward = math.fabs(math.tanh(theta_time))
+                x_time = (x_threshold - math.fabs(x)) / x_dot
+                x_reward = math.fabs(math.tanh(x_time))
 
-            # Only thinking about the pole angle
-            elif reward_method=="Normal_Angle":
-                theta = current_state[2]
-                std_theta = env.theta_threshold_radians / 3 # dividing by 3 for 3*sigma
-                theta_reward = _normal(std_theta, theta) / _normal(std_theta, 0)
-                reward = theta_reward
+                # Correlation coefficient
+                reward = 0.3 * x_reward + 0.7 * theta_reward
             else:
                 pass
+
+            # logger.info('Current state: %s' % str(current_state))
+            # logger.info('Action: %s' % str(action))
+            # logger.info('Next state: %s' % str(next_state))
+            # logger.info('Reward: %s' % str(reward))
+            # logger.info('Done: %s' % str(done))
 
             agent.remember(current_state, action, reward, next_state, done)
             agent.train()
