@@ -3,3 +3,7 @@ agents/__pycache__
 *.pyc
 uw_capstone_2020.egg-info/
 docs/.ipynb_checkpoints/
+pendulum/.ipynb_checkpoints/
+pendulum/pendulum_alexis/__pycache__
+pendulum/__pycache__
+pendulum/pendulum_alexis/.ipynb_checkpoints/
