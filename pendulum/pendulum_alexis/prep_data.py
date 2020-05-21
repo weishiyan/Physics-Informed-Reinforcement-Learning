@@ -35,7 +35,7 @@ dataPath = os.path.join(repoPath, "main", "Data")
 appDataPath = os.path.join(repoPath, "appendix", "Data")
 
 sys.path.insert(0, utilsPath)
-from plotting import newfig, savefig
+#from plotting import newfig, savefig
 
 def prep_data(theta, time, N_u=None, N_f=None, N_n=None, q=None, ub=None, lb=None, noise=0.0, idx_t_0=None, idx_t_1=None, N_0=None, N_1=None):
     # Reading external data [t is 100x1, usol is 256x100 (solution), x is 256x1]
@@ -86,6 +86,9 @@ def prep_data(theta, time, N_u=None, N_f=None, N_n=None, q=None, ub=None, lb=Non
     # training data
     t_train = t[idx,0] # variable train
     theta_train = theta[idx,0] # solution train
+
+    #t = t[points:,0]
+    #theta = theta[points:,0]
 
     # Domain bounds (lowerbounds upperbounds) [x, t], which are here ([-1.0, 0.0] and [1.0, 1.0])
     lb = t.min(axis=0)
