@@ -20,7 +20,7 @@ class PhysicsInformedNN(object):
     for width in layers[1:]:
         self.u_model.add(tf.keras.layers.Dense(
           width, activation=tf.nn.tanh))
-          #kernel_initializer='"zeros")) #''glorot_normal'))
+          #kernel_initializer="zeros")) #'glorot_normal'))
     
     # Computing the sizes of weights/biases for future decomposition
     self.sizes_w = []
