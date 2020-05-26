@@ -17,38 +17,47 @@ import time
 import prep_data
 #import lbfgs
 import pinn as PINNs
-import plot_loss
+import plot
 
 np.random.seed(1234)
 tf.random.set_seed(1234)
 
-epoch = 2000
+epoch = 500
 # Data size on the solution u
-N_u = 1500
+N_u = 500
 # Collocation points size, where we’ll check for f = 0
-N_f = 2500
+N_f = 1500
 # DeepNN topology (1-sized input [t], 8 hidden layer of 20-width, 1-sized output [theta]
 layers = [1, 20, 20, 20, 20, 20, 20, 20, 20, 1]
 # Setting up the TF SGD-based optimizer (set tf_epochs=0 to cancel it)
 tf_epochs = epoch
+
+# OPTIMIZERS
 tf_optimizer = tf.keras.optimizers.Adam(
   learning_rate=1e-3,
   beta_1=0.999,
   epsilon= 1e-1)
+#tf_optimizer = tf.keras.optimizers.Adadelta(
+#    learning_rate=1e-3,
+#    epsilon=1e-1)
+
 # Setting up the quasi-newton LBGFS optimizer (set nt_epochs=0 to cancel it)
 nt_epochs = epoch
 
 
 # Collect data
-npz = np.load('random_pendulum_data.npz', allow_pickle=True)
+npz = np.load('data/single_random_pendulum_data.npz', allow_pickle=True)
 # 50000 states of the pendulum
 states_data = npz['states']
 rewards_data = npz['rewards']
 # 50000 corresponding times for each state of the pendulum
 time_data = npz['time']
-# find theta from states array
+
+# find theta from states array (cos(theta))
 #theta = [np.arccos(x) for x in states_data[:,0]]
 #theta = np.array(theta)
+
+# using sin(theta) data
 theta = states_data[:,1]
 # Getting the data
 # x and t => replaced by one t
@@ -64,7 +73,7 @@ theta = states_data[:,1]
 # lb same
 
 print("Entering 'data_prep' script")
-set_size = 5000 # reduce set size to accommodate computational limitations
+set_size = 1500 # reduce set size to accommodate computational limitations
 t, theta, t_train, theta_train, t_f, ub, lb = prep_data.prep_data(theta[:set_size], time_data[:set_size], N_u, N_f, noise=0.0)
 print("Exited 'data_prep' script")
 # Simple test confirming theta_train and t_train go together
@@ -90,24 +99,28 @@ def error():
 logger.set_error_fn(error)
 
 #print((t_train[:,None].shape))
-pinn.fit(t_train[:,None], theta_train[:,None], tf_epochs=tf_epochs, nt_config=PINNs.Struct())
-#list_loss_complete = np.array(list_loss_complete)
-#filename = "pendulum_loss"
-#np.savez("%s" %filename, loss=list_loss_complete)
+pinn.fit(t_train[:], theta_train[:], tf_epochs=tf_epochs)
 
 # Getting the model predictions, from the same t that the predictions were previously obtained from
 theta_pred, f_pred = pinn.predict(t)
 
+print(f_pred.shape)
+f_predict_list = []
+i = 0
+for i in range(f_pred.shape[0]):
+  f_predict_list.append(f_pred[i, i, 0])
 
-plt.plot(t,theta, "b-", label = "Exact")
-plt.plot(t,theta_pred, "r--", label="NN-Prediction")
-plt.scatter(t_train,theta_train,c="g", label="Training Points")
-plt.ylabel("Theta")
-plt.xlabel("Time")
-plt.legend()
-plt.savefig("pred_vs_exact.png")
+f_predict_array = np.array(f_predict_list)
 
-#prep_data.plot_inf_cont_results(t, theta_pred.numpy().flatten(), t_train, theta_train, file="pendulum_plot")
-#  Exact_u, X, T, x, t, file="burger_equation_plot")
+f = open("logs/predicted_theta.out", "w+")
+f.write("time \t theta \t theta_predicted \t f_predicted\n")
+i = 0
+for i in range(theta_pred.shape[0]):
+  f.write("%0.3f \t %0.3f \t %0.3f \t \t \t %0.3f \n" %(t[i,0], theta[i,0], theta_pred[i,0], f_predict_array[i]))
 
-#plot_loss.plotting(filename)
+
+
+# Plotting 
+plot.exact_vs_pred(t, t_train, theta, theta_train, f_predict_array) #theta_pred)
+filename = "pendulum_loss"
+plot.loss(filename)
