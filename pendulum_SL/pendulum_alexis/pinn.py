@@ -5,7 +5,7 @@ import lbfgs
 
 nt_config = lbfgs.Struct()
 nt_config.learningRate = 0.8
-nt_config.maxIter = 500 #nt_epochs
+nt_config.maxIter = 10 #nt_epochs
 nt_config.nCorrection = 50
 nt_config.tolFun = 1.0 * np.finfo(float).eps
 

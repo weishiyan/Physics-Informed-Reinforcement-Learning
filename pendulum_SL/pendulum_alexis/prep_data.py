@@ -37,13 +37,18 @@ appDataPath = os.path.join(repoPath, "appendix", "Data")
 sys.path.insert(0, utilsPath)
 #from plotting import newfig, savefig
 
-def prep_data(theta, time, N_u=None, N_f=None, N_n=None, q=None, ub=None, lb=None, noise=0.0, idx_t_0=None, idx_t_1=None, N_0=None, N_1=None):
+def prep_data(theta, time, N_u=None, N_f=None, N_n=None, q=None, ub=None, lb=None, noise=0.1, idx_t_0=None, idx_t_1=None, N_0=None, N_1=None):
     # Reading external data [t is 100x1, usol is 256x100 (solution), x is 256x1]
     
 
     # Extracting data 
     t = time[:,None] # variable
     theta = theta[:,None] # solution
+
+    # Adding noise to data - awm
+    mu, sigma = 0, noise
+    random_noise = np.random.normal(mu, sigma, [len(theta)]) # give same shape as data
+    theta = theta + random_noise
     
     #---------------- Unnecessary ----------------#
     # Reducing unnecessary variable

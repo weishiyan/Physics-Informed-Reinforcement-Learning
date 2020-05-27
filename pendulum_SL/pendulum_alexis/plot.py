@@ -4,13 +4,18 @@ import matplotlib.pyplot as plt
 # NOTE: column1 = mse NN, column2 = mse PINN, column3 = mse NN + mse PINN
 
 def exact_vs_pred(t, t_train, theta, theta_train, theta_pred):
+    
+
     plt.plot(t,theta, "b-", label = "Exact")
     end = theta_pred.shape[0]
     plt.plot(t,theta_pred, "r--", label="Prediction")
     #plt.scatter(t_train,theta_train,c="g", label="Training Points")
     plt.ylabel("Theta")
     plt.xlabel("Time")
-    plt.legend()
+    handles, labels = plt.gca().get_legend_handles_labels()
+    by_label = dict(zip(labels,handles))
+    plt.legend(by_label.values(), by_label.keys())
+    #plt.legend()
     plt.savefig("plots/pred_vs_exact.png")
     return
 

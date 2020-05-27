@@ -121,6 +121,6 @@ for i in range(theta_pred.shape[0]):
 
 
 # Plotting 
-plot.exact_vs_pred(t, t_train, theta, theta_train, f_predict_array) #theta_pred)
+plot.exact_vs_pred(t, t_train, theta, theta_train, theta_pred)
 filename = "pendulum_loss"
 plot.loss(filename)
