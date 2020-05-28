@@ -40,7 +40,7 @@ if __name__ == "__main__":
     agent = DQN(env)
 
     ## Save infomation ##
-    reward_method = "Time"
+    reward_method = "RewardInAgent"
     month = time.localtime().tm_mon
     day = time.localtime().tm_mday
     hour = time.localtime().tm_hour
@@ -63,33 +63,34 @@ if __name__ == "__main__":
             action = agent.action(current_state)
             next_state, reward, done, _ = env.step(action)
 
+            ## MOVED TO AGENT
             # Incorporating environment data in reward structure
             # Linear reward map
             # Angle at which to fail the episode
             # self.theta_threshold_radians = 12 * 2 * math.pi / 360
             # self.x_threshold = 2.4
-            if reward_method=="Linear":
-                x, x_dot, theta, theta_dot = current_state
-                x_threshold = env.x_threshold
-                theta_threshold = env.theta_threshold_radians
-                x_reward = _linear(x, x_threshold)
-                theta_reward = _linear(theta, theta_threshold)
-
-                # Correlation coefficient against total reward
-                reward = 0.426 * x_reward + 0.574 * theta_reward
-            elif reward_method=="Time":
-                x, x_dot, theta, theta_dot = current_state
-                x_threshold = env.x_threshold
-                theta_threshold = env.theta_threshold_radians
-                theta_time = (theta_threshold - math.fabs(theta)) / theta_dot
-                theta_reward = math.fabs(math.tanh(theta_time))
-                x_time = (x_threshold - math.fabs(x)) / x_dot
-                x_reward = math.fabs(math.tanh(x_time))
-
-                # Correlation coefficient
-                reward = 0.3 * x_reward + 0.7 * theta_reward
-            else:
-                pass
+            # if reward_method=="Linear":
+            #     x, x_dot, theta, theta_dot = current_state
+            #     x_threshold = env.x_threshold
+            #     theta_threshold = env.theta_threshold_radians
+            #     x_reward = _linear(x, x_threshold)
+            #     theta_reward = _linear(theta, theta_threshold)
+            #
+            #     # Correlation coefficient against total reward
+            #     reward = 0.426 * x_reward + 0.574 * theta_reward
+            # elif reward_method=="Time":
+            #     x, x_dot, theta, theta_dot = current_state
+            #     x_threshold = env.x_threshold
+            #     theta_threshold = env.theta_threshold_radians
+            #     theta_time = (theta_threshold - math.fabs(theta)) / theta_dot
+            #     theta_reward = math.fabs(math.tanh(theta_time))
+            #     x_time = (x_threshold - math.fabs(x)) / x_dot
+            #     x_reward = math.fabs(math.tanh(x_time))
+            #
+            #     # Correlation coefficient
+            #     reward = 0.3 * x_reward + 0.7 * theta_reward
+            # else:
+            #     pass
 
             # logger.info('Current state: %s' % str(current_state))
             # logger.info('Action: %s' % str(action))

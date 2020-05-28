@@ -3,7 +3,7 @@
     "gamma": "0.95",
     "epsilon": "1.0",
     "epsilon_min" : "0.01",
-    "epsilon_decay" : "0.9995",
+    "epsilon_decay" : "0.98",
     "learning_rate" : "0.001",
     "batch_size" : "32",
     "target_train_interval" : "50",
