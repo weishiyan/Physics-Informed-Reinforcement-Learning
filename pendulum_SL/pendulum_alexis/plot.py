@@ -1,10 +1,10 @@
-import numpy as np 
-import matplotlib.pyplot as plt 
+import numpy as np
+import matplotlib.pyplot as plt
 
 # NOTE: column1 = mse NN, column2 = mse PINN, column3 = mse NN + mse PINN
 
-def exact_vs_pred(t, t_train, theta, theta_train, theta_pred):
-    
+def exact_vs_pred(t, t_train, theta, theta_train, theta_pred, file_name):
+
 
     plt.plot(t,theta, "b-", label = "Exact")
     end = theta_pred.shape[0]
@@ -16,12 +16,11 @@ def exact_vs_pred(t, t_train, theta, theta_train, theta_pred):
     by_label = dict(zip(labels,handles))
     plt.legend(by_label.values(), by_label.keys())
     #plt.legend()
-    plt.savefig("plots/pred_vs_exact.png")
+    plt.savefig("plots/" + file_name)
     return
 
 def loss(file):
-#file = "pendulum_loss"
-    p_loss = np.load("%s.npz" %file, allow_pickle=True)
+    p_loss = np.load("pendulum_loss.npz", allow_pickle=True)
     p_loss_array = p_loss["loss"]
     #print("p_loss_array", p_loss_array.shape[0])
     fig, axs = plt.subplots(1,3,sharey='row', figsize=(12,7))
@@ -42,8 +41,5 @@ def loss(file):
     axs[2].plot(x[:],p_loss_array[:,2], c="r") #, label="$MSE_{NN}$+$MSE_{PINN}$")  # mse NN + mse PINN
     #axs.legend()
     fig.tight_layout()
-    plt.savefig("plots/pendulum_loss.png")
+    plt.savefig("plots/" + file)
     return
-
-
-        

@@ -20,17 +20,16 @@ sys.path.insert(0, utilsPath)
 
 
 def prep_data(theta, time, N_u=None, N_f=None, N_n=None, q=None, ub=None,
-              lb=None, noise=0.1, idx_t_0=None, idx_t_1=None, N_0=None,
+              lb=None, mu=0.3, sigma=0.1, idx_t_0=None, idx_t_1=None, N_0=None,
               N_1=None):
     # Extracting data
     t = time[:, None]  # variable
     theta = theta[:, None]  # solution
 
-    # Adding noise to data - awm
-    mu, sigma = 0, noise
     # give same shape as data
     random_noise = np.random.normal(mu, sigma, [len(theta)])
-    theta = theta + random_noise
+    random_noise = random_noise.reshape(random_noise.shape[0], 1)
+    theta = np.add(theta, random_noise)
 
     idx = np.random.choice(t.shape[0], N_u, replace=False)
     # training data

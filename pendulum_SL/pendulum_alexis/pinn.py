@@ -1,14 +1,6 @@
-import numpy as np 
+import numpy as np
 import tensorflow as tf
 import lbfgs
-
-
-nt_config = lbfgs.Struct()
-nt_config.learningRate = 0.8
-nt_config.maxIter = 10 #nt_epochs
-nt_config.nCorrection = 50
-nt_config.tolFun = 1.0 * np.finfo(float).eps
-
 
 class PhysicsInformedNN(object):
   def __init__(self, layers, optimizer, logger, t_f, ub, lb):
@@ -21,7 +13,7 @@ class PhysicsInformedNN(object):
         self.u_model.add(tf.keras.layers.Dense(
           width, activation=tf.nn.tanh))
           #kernel_initializer="zeros")) #'glorot_normal'))
-    
+
     # Computing the sizes of weights/biases for future decomposition
     self.sizes_w = []
     self.sizes_b = []
@@ -38,8 +30,8 @@ class PhysicsInformedNN(object):
     # Collocation coordinates
     self.t_f = tf.convert_to_tensor(t_f[:, None], dtype=self.dtype)
 
-    
-    
+
+
   # Defining custom loss
   def __loss(self, theta, theta_pred):
     f_pred = self.f_model()
@@ -66,10 +58,10 @@ class PhysicsInformedNN(object):
       # Watching time input
       tape.watch(self.t_f)
       # Getting the prediction
-      u = self.u_model(self.t_f) # theta prediction from model 
+      u = self.u_model(self.t_f) # theta prediction from model
       # Deriving INSIDE the tape
       u_t = tape.gradient(u, self.t_f) # d_theta/d_time
-    
+
     # Getting the second derivative
     u_tt = tape.gradient(u_t, self.t_f) # d2_theta/d_time2
 
@@ -108,16 +100,19 @@ class PhysicsInformedNN(object):
     return self.u_model.summary()
 
   # The training function
-  def fit(self, t_train, theta, tf_epochs=5000, nt_config=nt_config):
+  def fit(self, t_train, theta, nt_config, tf_epochs=5000):
     self.logger.log_train_start(self)
 
     # Creating the tensors
     t_train = tf.convert_to_tensor(t_train[:,None], dtype=self.dtype)
     theta = tf.convert_to_tensor(theta[:,None], dtype=self.dtype)
+
+    # Reporting loss and logging
     fnew = open("logs/Loss_report_tf.out", "w+")
     fnew.write("u_loss \t \t f_loss \t \t sum_loss \n")
     loss_list = []
     self.logger.log_train_opt("Adam")
+
     for epoch in range(tf_epochs):
       # Optimization step
       u_loss, f_loss, grads = self.__grad(t_train, theta)
@@ -128,12 +123,12 @@ class PhysicsInformedNN(object):
       #self.u_model.compile(optimizer=self.optimizer, loss='mse')
       #self.u_model.fit(t_train,theta)
       self.logger.log_train_epoch(epoch, loss_value)
-    
+
     self.logger.log_train_opt("LBFGS")
     fnew = open("logs/Loss_report_nt.out", "w+")
     fnew.write("u_loss \t \t f_loss \t \t sum_loss \n")
     def loss_and_flat_grad(w):
-     
+
       with tf.GradientTape() as tape:
         self.set_weights(w)
         u_loss, f_loss = self.__loss(theta, self.u_model(t_train))
@@ -166,7 +161,7 @@ class PhysicsInformedNN(object):
     fnew.close()
 
   def predict(self, t):
-    
+
     theta_pred = self.u_model(t)
     f_pred = self.f_model()
     return theta_pred, f_pred
