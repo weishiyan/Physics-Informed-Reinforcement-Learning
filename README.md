@@ -3,7 +3,6 @@
 ## Software Requirement
 * Python 3.7 
 * The cartpole environment framework and pendulum data set is built using [OpenAI Gym](https://gym.openai.com) 
-* Supervised learning code built from [PINNs-TF2.0](https://github.com/pierremtb/PINNs-TF2.0)
 * Additional python packages are defined in the setup.py  
 
 ## Installing 
@@ -43,3 +42,5 @@ docs
   ├ Reinforcement Learning.pdf
   └ use_cases.ipynb
 ```
+## References
+* Supervised learning code built from [PINNs-TF2.0](https://github.com/pierremtb/PINNs-TF2.0)

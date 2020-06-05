@@ -1,11 +1,13 @@
 import numpy as np 
 import tensorflow as tf
 import lbfgs
+import matplotlib.pyplot as plt
+from IPython import display
 
 
 nt_config = lbfgs.Struct()
 nt_config.learningRate = 0.8
-nt_config.maxIter = 10 #nt_epochs
+nt_config.maxIter = 0 #10 #nt_epochs
 nt_config.nCorrection = 50
 nt_config.tolFun = 1.0 * np.finfo(float).eps
 
@@ -19,8 +21,8 @@ class PhysicsInformedNN(object):
       lambda X: 2.0*(X - lb)/(ub - lb) - 1.0))
     for width in layers[1:]:
         self.u_model.add(tf.keras.layers.Dense(
-          width, activation=tf.nn.tanh))
-          #kernel_initializer="zeros")) #'glorot_normal'))
+          width, activation=tf.nn.tanh,
+          kernel_initializer='glorot_normal'))
     
     # Computing the sizes of weights/biases for future decomposition
     self.sizes_w = []
@@ -67,18 +69,21 @@ class PhysicsInformedNN(object):
       tape.watch(self.t_f)
       # Getting the prediction
       u = self.u_model(self.t_f) # theta prediction from model 
+      print("\t predicted theta", u[0]) ##u[0])
       # Deriving INSIDE the tape
       u_t = tape.gradient(u, self.t_f) # d_theta/d_time
+      print("\t u_t:", u_t[0])
     
     # Getting the second derivative
     u_tt = tape.gradient(u_t, self.t_f) # d2_theta/d_time2
+    #print("u_tt: ", u_tt)
 
     # Letting the tape go
     del tape
 
     # Buidling the PINNs
       # using small-angle apprximation
-    return (u_tt + 10.0*u) #10.0 holding value for now (g/l)
+    return (u_tt + 10.0*np.sin(u)) #10.0 holding value for now (g/l)
 
   #def get_params(self, numpy=False):
   #  return self.g, self.l
@@ -110,7 +115,8 @@ class PhysicsInformedNN(object):
   # The training function
   def fit(self, t_train, theta, tf_epochs=5000, nt_config=nt_config):
     self.logger.log_train_start(self)
-
+    #self.u_model.compile(optimizer=self.optimizer, loss='mse')
+    #self.u_model.fit(t_train,theta)
     # Creating the tensors
     t_train = tf.convert_to_tensor(t_train[:,None], dtype=self.dtype)
     theta = tf.convert_to_tensor(theta[:,None], dtype=self.dtype)
@@ -125,9 +131,17 @@ class PhysicsInformedNN(object):
       fnew.write("%s \t %s \t %s \n" %("{:0.4e}".format(u_loss), "{:0.4e}".format(f_loss), "{:0.4e}".format(loss_value)))
       loss_list.append([u_loss, f_loss, loss_value])
       self.optimizer.apply_gradients(zip(grads, self.__wrap_training_variables()))
-      #self.u_model.compile(optimizer=self.optimizer, loss='mse')
-      #self.u_model.fit(t_train,theta)
+      
       self.logger.log_train_epoch(epoch, loss_value)
+
+      #if epoch % 1000 == 0:
+      #  #plt.clf()
+      #  plt.scatter(t_train, theta, marker='.')
+      #  plt.scatter(t_train, self.u_model(t_train), marker='.')
+      #  display.display(plt.gcf())
+      #  display.clear_output(wait=True)
+      #  plt.savefig("train.png")
+      #  #plt.show()
     
     self.logger.log_train_opt("LBFGS")
     fnew = open("logs/Loss_report_nt.out", "w+")
@@ -167,6 +181,6 @@ class PhysicsInformedNN(object):
 
   def predict(self, t):
     
-    theta_pred = self.u_model(t)
+    theta_pred = self.u_model.predict(t)
     f_pred = self.f_model()
     return theta_pred, f_pred

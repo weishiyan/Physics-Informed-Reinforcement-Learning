@@ -22,6 +22,20 @@ sys.path.insert(0, utilsPath)
 def prep_data(theta, time, N_u=None, N_f=None, N_n=None, q=None, ub=None,
               lb=None, noise=0.1, idx_t_0=None, idx_t_1=None, N_0=None,
               N_1=None):
+
+    # Jan's data set
+    #OMEGA = 2
+    #THETA_0 = 0.33
+#
+    #lb = 0
+    #ub = 4*np.pi 
+    #t_f = lb + (ub - lb) * lhs(1, N_f)
+    #theta = THETA_0*np.cos(OMEGA*t_f)
+    #t_train = t_f
+    ##theta_train = theta[:N_u]
+    #theta_train = THETA_0*np.cos(OMEGA*t_train) + noise*np.random.randn(N_f,1)    
+    
+    
     # Extracting data
     t = time[:, None]  # variable
     theta = theta[:, None]  # solution
@@ -30,12 +44,14 @@ def prep_data(theta, time, N_u=None, N_f=None, N_n=None, q=None, ub=None,
     mu, sigma = 0, noise
     # give same shape as data
     random_noise = np.random.normal(mu, sigma, [len(theta)])
-    theta = theta + random_noise
+    theta = theta #+ random_noise
 
-    idx = np.random.choice(t.shape[0], N_u, replace=False)
+    #idx = np.random.choice(t.shape[0], N_u, replace=False)
     # training data
-    t_train = t[idx, 0]  # variable train
-    theta_train = theta[idx, 0]  # solution train
+    #t_train = t[idx, 0]  # variable train
+    #theta_train = theta[idx, 0]  # solution train
+    t_train = t[:N_u, 0]  # variable train
+    theta_train = theta[:N_u, 0]  # solution train
 
     # t = t[points:,0]
     # theta = theta[points:,0]
