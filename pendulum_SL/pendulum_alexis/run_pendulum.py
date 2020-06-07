@@ -39,8 +39,6 @@ nt_config.maxIter = nt_epochs
 nt_config.nCorrection = 50
 nt_config.tolFun = 1.0 * np.finfo(float).eps
 
-
-
 # OPTIMIZERS
 tf_optimizer = tf.keras.optimizers.Adam(
     learning_rate=1e-3,
@@ -49,9 +47,6 @@ tf_optimizer = tf.keras.optimizers.Adam(
 # tf_optimizer = tf.keras.optimizers.Adadelta(
 #    learning_rate=1e-3,
 #    epsilon=1e-1)
-
-
-
 
 # Collect data
 npz = np.load('data/single_random_pendulum_data.npz', allow_pickle=True)

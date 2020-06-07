@@ -1,9 +1,5 @@
 .DS_Store
-cartpole_RL/agents/__pycache__
 *.pyc
 uw_capstone_2020.egg-info/
-docs/.ipynb_checkpoints/
-pendulum_SL/.ipynb_checkpoints/
-pendulum_SL/pendulum_alexis/__pycache__
-pendulum_SL/__pycache__
-pendulum_SL/pendulum_alexis/.ipynb_checkpoints/
+.ipynb_checkpoints/
+__pycache__
