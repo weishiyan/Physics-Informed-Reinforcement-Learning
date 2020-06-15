@@ -1,4 +1,4 @@
-# Reinforcement Learning environments and agents/policies used for the CDi Capstone 2020 project
+# Reinforcement Learning environments and agents/policies for the cartpole problem
 
 ## Software Requirement
 * Python 3.7 
