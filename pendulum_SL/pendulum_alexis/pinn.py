@@ -4,8 +4,6 @@ import lbfgs
 import matplotlib.pyplot as plt
 from IPython import display
 
-<<<<<<< HEAD
-=======
 
 nt_config = lbfgs.Struct()
 nt_config.learningRate = 0.8
@@ -14,7 +12,6 @@ nt_config.nCorrection = 50
 nt_config.tolFun = 1.0 * np.finfo(float).eps
 
 
->>>>>>> master
 class PhysicsInformedNN(object):
   def __init__(self, layers, optimizer, logger, t_f, ub, lb):
     # Descriptive Keras model [2, 20, …, 20, 1]
@@ -24,15 +21,9 @@ class PhysicsInformedNN(object):
       lambda X: 2.0*(X - lb)/(ub - lb) - 1.0))
     for width in layers[1:]:
         self.u_model.add(tf.keras.layers.Dense(
-<<<<<<< HEAD
-          width, activation=tf.nn.tanh))
-          #kernel_initializer="zeros")) #'glorot_normal'))
-
-=======
           width, activation=tf.nn.tanh,
           kernel_initializer='glorot_normal'))
-    
->>>>>>> master
+
     # Computing the sizes of weights/biases for future decomposition
     self.sizes_w = []
     self.sizes_b = []
@@ -77,19 +68,12 @@ class PhysicsInformedNN(object):
       # Watching time input
       tape.watch(self.t_f)
       # Getting the prediction
-<<<<<<< HEAD
       u = self.u_model(self.t_f) # theta prediction from model
-      # Deriving INSIDE the tape
-      u_t = tape.gradient(u, self.t_f) # d_theta/d_time
-
-=======
-      u = self.u_model(self.t_f) # theta prediction from model 
       print("\t predicted theta", u[0]) ##u[0])
       # Deriving INSIDE the tape
       u_t = tape.gradient(u, self.t_f) # d_theta/d_time
       print("\t u_t:", u_t[0])
-    
->>>>>>> master
+
     # Getting the second derivative
     u_tt = tape.gradient(u_t, self.t_f) # d2_theta/d_time2
     #print("u_tt: ", u_tt)
@@ -150,11 +134,9 @@ class PhysicsInformedNN(object):
       fnew.write("%s \t %s \t %s \n" %("{:0.4e}".format(u_loss), "{:0.4e}".format(f_loss), "{:0.4e}".format(loss_value)))
       loss_list.append([u_loss, f_loss, loss_value])
       self.optimizer.apply_gradients(zip(grads, self.__wrap_training_variables()))
-      
+
       self.logger.log_train_epoch(epoch, loss_value)
 
-<<<<<<< HEAD
-=======
       #if epoch % 1000 == 0:
       #  #plt.clf()
       #  plt.scatter(t_train, theta, marker='.')
@@ -163,8 +145,7 @@ class PhysicsInformedNN(object):
       #  display.clear_output(wait=True)
       #  plt.savefig("train.png")
       #  #plt.show()
-    
->>>>>>> master
+
     self.logger.log_train_opt("LBFGS")
     fnew = open("logs/Loss_report_nt.out", "w+")
     fnew.write("u_loss \t \t f_loss \t \t sum_loss \n")
@@ -202,12 +183,7 @@ class PhysicsInformedNN(object):
     fnew.close()
 
   def predict(self, t):
-<<<<<<< HEAD
 
-    theta_pred = self.u_model(t)
-=======
-    
     theta_pred = self.u_model.predict(t)
->>>>>>> master
     f_pred = self.f_model()
     return theta_pred, f_pred
