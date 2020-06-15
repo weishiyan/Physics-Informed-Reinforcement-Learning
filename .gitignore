@@ -1,5 +1,14 @@
 .DS_Store
 *.pyc
 uw_capstone_2020.egg-info/
+<<<<<<< HEAD
 .ipynb_checkpoints/
 __pycache__
+=======
+docs/.ipynb_checkpoints/
+pendulum_SL/.ipynb_checkpoints/
+pendulum_SL/pendulum_alexis/__pycache__
+pendulum_SL/__pycache__
+pendulum_SL/pendulum_alexis/.ipynb_checkpoints/
+pendulum_SL/Physics_Informed_Neural_Networks_notebooks/.ipynb_checkpoints/
+>>>>>>> master

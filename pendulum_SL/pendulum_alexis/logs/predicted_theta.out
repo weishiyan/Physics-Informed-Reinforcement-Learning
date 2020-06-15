@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 time 	 theta 	 theta_predicted 	 f_predicted
 0.000 	 0.915 	 0.070 	 	 	 -0.245 
 0.050 	 0.563 	 0.070 	 	 	 -0.585 
@@ -445,3 +446,5 @@ time 	 theta 	 theta_predicted 	 f_predicted
 22.150 	 0.862 	 -0.051 	 	 	 -0.137 
 22.200 	 0.741 	 -0.051 	 	 	 0.220 
 22.250 	 0.672 	 -0.051 	 	 	 0.663 
+=======
+>>>>>>> master

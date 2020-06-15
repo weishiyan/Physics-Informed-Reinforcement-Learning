@@ -25,9 +25,13 @@ import lbfgs
 np.random.seed(1234)
 tf.random.set_seed(1234)
 
-# Turning off INFO and WARNING messages for tf
-
-
+epoch = 500
+# Data size on the solution u
+N_u = 450
+# Collocation points size, where we’ll check for f = 0
+N_f = 1200
+# DeepNN topology (1-sized input [t], 8 hidden layer of 20-width, 1-sized output [theta]
+layers = [1, 100, 100, 100, 1] #20, 20, 20, 20, 20, 20, 20, 20, 1]
 # Setting up the TF SGD-based optimizer (set tf_epochs=0 to cancel it)
 tf_epochs = 1000
 # Setting up the quasi-newton LBGFS optimizer (set nt_epochs=0 to cancel it)
@@ -41,10 +45,10 @@ nt_config.tolFun = 1.0 * np.finfo(float).eps
 
 # OPTIMIZERS
 tf_optimizer = tf.keras.optimizers.Adam(
-    learning_rate=1e-3,
-    beta_1=0.999,
-    epsilon=1e-1)
-# tf_optimizer = tf.keras.optimizers.Adadelta(
+  learning_rate=1e-1,
+  beta_1=0.999,
+  epsilon= 1e-2)
+#tf_optimizer = tf.keras.optimizers.Adadelta(
 #    learning_rate=1e-3,
 #    epsilon=1e-1)
 
@@ -57,11 +61,22 @@ rewards_data = npz['rewards']
 time_data = npz['time']
 
 # find theta from states array (cos(theta))
+time = np.array(time_data)
+#theta_cos = np.array(states_data[:,0])
+#theta_sin = np.array(states_data[:,1])
 #theta = [np.arccos(x) for x in states_data[:,0]]
 #theta = np.array(theta)
 
 # using sin(theta) data
-theta = states_data[:, 1]
+theta = states_data[:,1]
+
+#theta_dot = np.array(states_data[:,2])
+#fnew = open('data.txt', "w+")
+#fnew.write("time \t cos(th) \t sin(th) \t theta \t theta_dot \n")
+#for i in range(theta_dot.shape[0]):
+#  fnew.write("%0.3f \t %0.3f \t %0.3f \t %0.3f \t \t %0.3f \n" %(time[i], theta_cos[i], theta_sin[i], theta[i], theta_dot[i]))
+#fnew.close()
+
 # Getting the data
 # x and t => replaced by one t
 # usol => replace by theta
@@ -88,6 +103,8 @@ sigma = 0.2
 t, theta, t_train, theta_train, t_f, ub, lb = prep_data.prep_data(
     theta[:set_size], time_data[:set_size], N_u, N_f, mu=mu, sigma=sigma)
 print("Exited 'data_prep' script")
+#print("theta_train: ", theta_train)
+#print("time_train:", t_train)
 # Simple test confirming theta_train and t_train go together
 # print(t_train.shape)
 # print(t_train)
@@ -105,7 +122,7 @@ layers = [1, 20, 20, 1]
 # Variables needed: t_f, ub, lb, t, theta, t_train, theta_train
 logger = prep_data.Logger(frequency=10)
 print("Entering 'pinn' script")
-pinn = PINNs.PhysicsInformedNN(layers, tf_optimizer, logger, t_f, ub, lb)
+pinn = PINNs.PhysicsInformedNN(layers, tf_optimizer, logger, t_train, ub, lb)
 print("Exited 'pinn' script")
 
 
@@ -121,24 +138,22 @@ pinn.fit(t_train, theta_train, nt_config, tf_epochs=tf_epochs)
 
 # Getting the model predictions, from the same t that the predictions were previously obtained from
 theta_pred, f_pred = pinn.predict(t)
+#print("theta_pred TYPE", type(theta_pred))
 
-# Obtaining the predicted theta values
-print("f_pred shape: ")
-print(f_pred.shape)
-f_predict_list = []
-i = 0
-for i in range(f_pred.shape[0]):
-    f_predict_list.append(f_pred[i, 0, 0])
+#print(f_pred.shape)
+#f_predict_list = []
+#i = 0
+#for i in range(f_pred.shape[0]):
+#  f_predict_list.append(f_pred[i, i, 0])
 
-f_predict_array = np.array(f_predict_list)
+#f_predict_array = np.array(f_predict_list)
 
-# Logging the predicted theta values
-f = open("logs/predicted_theta.out", "w+")
-f.write("time \t theta \t theta_predicted \t f_predicted\n")
-i = 0
-for i in range(theta_pred.shape[0]):
-    f.write("%0.3f \t %0.3f \t %0.3f \t \t \t %0.3f \n" %
-            (t[i, 0], theta[i, 0], theta_pred[i, 0], f_predict_array[i]))
+#f = open("logs/predicted_theta.out", "w+")
+#f.write("time \t theta \t theta_predicted \t f_predicted\n")
+#i = 0
+#for i in range(theta_pred.shape[0]):
+#  f.write("%0.3f \t %0.3f \t %0.3f \t \t \t %0.3f \n" %(t[i,0], theta[i,0], theta_pred[i,0], f_predict_array[i]))
+
 
 
 # Plotting
