@@ -5,13 +5,13 @@ This repository is divided into two parts, each of which explore different machi
 
 #### Part I: Solving the Cartpole Problem Using Reinforcement Learning (RL)
 Reinforcement learning is utilized to train an "agent" and solve the cartpole problem. The problem is considered solved once the agent is capable of making an informed decision to balance the pole upright. 
-![solved cartpole demo](https://github.com/schr476/uw_capstone_2020/cartpole_RL/static/solved_cartpole.gjf)
+![solved cartpole demo](https://github.com/schr476/uw_capstone_2020/tree/master/cartpole_RL/static/solved_cartpole.gif)
 
 For more information click [here](https://github.com/schr476/uw_capstone_2020/tree/master/cartpole_RL)
 
 #### Part II: Building a Pendulum Environment Using Supervised Learning (SL)
 In order to implement the pendulum problem in RL, an environment must first be defined to respond to the agent's actions. An environment can be built using supervised learning responding to both a well-defined neural network and auto-differentiation that solve the simple pendulum equation: 
-$$\frac{d^2\theta}{d^2t}+\frac{g}{l}\sin\theta=0$$
+\frac{d^2\theta}{d^2t}+\frac{g}{l}\sin\theta=0
 
 
 ## Directory Organization
