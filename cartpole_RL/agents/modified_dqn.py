@@ -6,12 +6,26 @@ from keras.layers import Dense, Input
 from keras.optimizers import Adam
 import csv
 import json
+import math
 import logging
-
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger('RL-Logger')
 logger.setLevel(logging.INFO)
+
+
+# Custom reward structure to incorporate physics into the cartpole problem
+def _time_reward(current_state, env):
+    x, x_dot, theta, theta_dot = current_state
+    x_threshold = env.x_threshold
+    theta_threshold = env.theta_threshold_radians
+    theta_time = (theta_threshold - math.fabs(theta)) / theta_dot
+    theta_reward = math.fabs(math.tanh(theta_time))
+    x_time = (x_threshold - math.fabs(x)) / x_dot
+    x_reward = math.fabs(math.tanh(x_time))
+
+    # Correlation coefficient
+    return 0.3 * x_reward + 0.7 * theta_reward
 
 
 # The Deep Q-Network (DQN)
@@ -46,9 +60,10 @@ class DQN:
         self.tau = float(data['tau']) if 'tau' in data.keys() else 0.5
         self.memory_length = int(data['memory_length']) \
             if 'memory_length' in data.keys() else 2000
+
         self.memory = deque(maxlen=self.memory_length)
 
-        # Initializing models
+        # Building models
         self.model = self._build_model()
         self.target_model = self._build_model()
 
@@ -66,7 +81,7 @@ class DQN:
         h1 = Dense(32, activation='relu')(state_input)
         h2 = Dense(32)(h1)
         output = Dense(self.env.action_space.n)(h2)
-        model = Model(input=state_input, output=output)
+        model = Model(inputs=state_input, outputs=output)
         adam = Adam(lr=self.learning_rate)
         model.compile(optimizer=adam, loss='mse')
         return model
@@ -77,7 +92,6 @@ class DQN:
     def action(self, state):
         action = -1
         self.random_action = 0
-        # TODO: Update greed-epsilon to something like UBC
         self.epsilon_adj()
         if self.search_method == "epsilon" and \
                 np.random.rand() <= self.epsilon:
@@ -112,7 +126,8 @@ class DQN:
                 expectedQ = self.gamma * \
                         np.amax(self.target_model.predict(np_next_state)[0])
 
-            target = reward + expectedQ
+            # Modified reward structure
+            target = _time_reward(state, self.env) + expectedQ
 
             target_f = self.target_model.predict(np_state)
             target_f[0][action] = target
