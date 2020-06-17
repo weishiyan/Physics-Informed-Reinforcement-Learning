@@ -2,12 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt 
 
 # NOTE: column1 = mse NN, column2 = mse PINN, column3 = mse NN + mse PINN
-p = np.load("single_random_pendulum_data_L100.npz", allow_pickle=True)
+p = np.load("single_action_0_pendulum_data_L100.npz", allow_pickle=True)
 p_states = p["states"]
 p_time = p["time"]
 mu, sigma = 0, 0.1
 random_noise = np.random.normal(mu, sigma, [len(p_states)]) # give same shape as data
-theta = np.arcsin(p_states[:,1]) #+ random_noise
+theta = p_states[:,1] #+ random_noise
 fig = plt.plot(figsize=(12,7))
 set_size = 1000
 # c_inference
@@ -18,4 +18,4 @@ plt.xlabel("Time")
 plt.plot(p_time[:set_size],theta[:set_size], c="orange") #, label="$MSE_{NN}$")  # mse NN
 #axs.legend()
 
-plt.savefig("pendulum_data_single_action_L100.png")
+plt.savefig("pendulum_data_single_action_0_L100.png")

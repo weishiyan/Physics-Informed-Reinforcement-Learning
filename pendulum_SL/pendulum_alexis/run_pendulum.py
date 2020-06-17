@@ -22,31 +22,31 @@ import plot
 np.random.seed(1234)
 tf.random.set_seed(1234)
 
-epoch = 500
+#epoch = 500
 # Data size on the solution u
 N_u = 450
 # Collocation points size, where we’ll check for f = 0
-N_f = 1200
+N_f = 600
 # DeepNN topology (1-sized input [t], 8 hidden layer of 20-width, 1-sized output [theta]
-layers = [1, 100, 100, 100, 1] #20, 20, 20, 20, 20, 20, 20, 20, 1]
+layers = [1, 20, 20, 20, 20, 20, 20, 20, 20, 1]
 # Setting up the TF SGD-based optimizer (set tf_epochs=0 to cancel it)
-tf_epochs = epoch
+tf_epochs = 500
 
 # OPTIMIZERS
 tf_optimizer = tf.keras.optimizers.Adam(
-  learning_rate=1e-1,
+  learning_rate=0.0007,
   beta_1=0.999,
-  epsilon= 1e-2)
+  epsilon= 1e-1)
 #tf_optimizer = tf.keras.optimizers.Adadelta(
 #    learning_rate=1e-3,
 #    epsilon=1e-1)
 
 # Setting up the quasi-newton LBGFS optimizer (set nt_epochs=0 to cancel it)
-nt_epochs = epoch
+nt_epochs = 500
 
 
 # Collect data
-npz = np.load('data/single_random_pendulum_data.npz', allow_pickle=True)
+npz = np.load('data/single_action_5_pendulum_data_L100.npz', allow_pickle=True)
 # 50000 states of the pendulum
 states_data = npz['states']
 rewards_data = npz['rewards']
