@@ -11,7 +11,7 @@ For more information click [here](https://github.com/schr476/uw_capstone_2020/tr
 
 #### Part II: Building a Pendulum Environment Using Supervised Learning (SL)
 In order to implement the pendulum problem in RL, an environment must first be defined to respond to the agent's actions. An environment can be built using supervised learning responding to both a well-defined neural network and auto-differentiation that solve the simple pendulum equation: 
-\frac{d^2\theta}{d^2t}+\frac{g}{l}\sin\theta=0
+$$\frac{d^2\theta}{d^2t}+\frac{g}{l}\sin\theta=0$$
 
 
 ## Directory Organization
