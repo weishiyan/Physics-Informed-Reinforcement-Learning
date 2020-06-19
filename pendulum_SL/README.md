@@ -10,9 +10,10 @@ Navigate to the *pendulum_SL* directory:
 
 To begin running, explicity define the number of epochs to run
 
-`$ python pendulum.py <tf_epochs> <nt_epochs>`
+`$ python pendulum.py <tf_epochs> <nt_epochs> <50 or 100>`
 
 Setting either of these values to zero will skip the method
+
 For example:
 
 `$ python pendulum.py 0 100` 

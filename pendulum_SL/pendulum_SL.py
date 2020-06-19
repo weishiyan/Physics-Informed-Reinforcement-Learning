@@ -5,11 +5,18 @@ import sys
 
 import Logger
 import pinn
+import nn
 import lbfgs
 import prep_data
 
 
-def run_pendulum(tf_ep, nt_ep):
+def run_pendulum(tf_ep, nt_ep, pendulum_length):
+    dataset = 'data/single_action_2_pendulum_data_L%s.npz' % pendulum_length
+    g = 10.0 # default gravity value in openAI 
+    #split_string = dataset.split('_')
+    #split_string = split_string[-1].split('.')
+    #length = split_string[0].replace('L','')
+    l = float(pendulum_length)
     # Data size on the solution u
     N_u = 500
     # Collocation points size, where we’ll check for f = 0
@@ -31,13 +38,14 @@ def run_pendulum(tf_ep, nt_ep):
 
     # Creating the model and training
     X_f, Exact_u, X_u_train, u_train, lb, ub = prep_data.prep_data(
-        N_u, N_f, noise=0.01)
+        dataset, N_u, N_f, noise=0.01)
     plt.scatter(X_u_train, u_train, marker='.')
     plt.show()
+    logger = Logger.Logger(frequency=50)
 
-    logger = Logger.Logger(frequency=10)
+    # Train with physics informed network
     pinns = pinn.PhysicsInformedNN(
-        layers, tf_optimizer, logger, X_u_train, ub, lb, nu=(10/100))
+        layers, tf_optimizer, logger, X_u_train, ub, lb, g, l)
 
 
     def error():
@@ -54,10 +62,33 @@ def run_pendulum(tf_ep, nt_ep):
     plt.xlabel("Time (s)")
     plt.ylabel("Theta")
     plt.title("Predicted Data from Physics Informed Neural Network")
-    plt.savefig("plots/Predicted_Data.png")
+    plt.savefig("plots/PINN_Predicted_Data.png")
     # plt.show()
+
+    # Train with standard neural network
+    nns = nn.NN(
+        layers, tf_optimizer, logger, X_u_train, ub, lb, g, l)
+
+
+    def error():
+        u_pred = nns.predict(X_f)
+        return np.linalg.norm(Exact_u - u_pred, 2) / np.linalg.norm(Exact_u, 2)
+
+    logger.set_error_fn(error)
+    nns.fit(X_u_train, u_train, tf_epochs, nt_config)
+
+    u_pred = nns.predict(X_f)
+
+    plt.scatter(X_f, u_pred, marker='.',c='r')
+    plt.xlabel("Time (s)")
+    plt.ylabel("Theta")
+    plt.title("Predicted Data from Physics Informed Neural Network")
+    plt.savefig("plots/NN_Predicted_Data.png")
+    # plt.show()
+
 
 tf_eps = sys.argv[1]
 nt_eps = sys.argv[2]
+pen_leng = sys.argv[3]
 
-data = run_pendulum(tf_eps, nt_eps)
+data = run_pendulum(tf_eps, nt_eps, pen_leng)

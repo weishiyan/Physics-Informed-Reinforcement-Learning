@@ -2,9 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt 
 
 
-def prep_data(N_u, N_f, noise=0.1):
+def prep_data(dataset, N_u, N_f, noise=0.1):
     npz = np.load(
-        'data/single_action_5_pendulum_data_L100.npz',
+        '%s' % dataset,
         allow_pickle=True)
     # 50000 states of the pendulum
     states_data = npz['states']

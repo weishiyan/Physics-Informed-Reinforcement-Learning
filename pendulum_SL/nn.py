@@ -3,7 +3,7 @@ import lbfgs
 import matplotlib.pyplot as plt
 
 
-class PhysicsInformedNN(object):
+class NN(object):
     def __init__(self, layers, optimizer, logger, X_f, ub, lb, g, l):
         # Descriptive Keras model [1, 20, …, 20, 1]
         self.u_model = tf.keras.Sequential()
@@ -30,9 +30,7 @@ class PhysicsInformedNN(object):
         self.t_f = tf.convert_to_tensor(X_f, dtype=self.dtype)
 
     def __loss(self, u, u_pred):
-        f_pred = self.f_model()
-        return tf.reduce_sum(
-            tf.square(u - u_pred)) + tf.reduce_mean(tf.square(f_pred))
+        return tf.reduce_sum(tf.square(u - u_pred))
 
     def __grad(self, X, u):
         with tf.GradientTape() as tape:
@@ -114,7 +112,7 @@ class PhysicsInformedNN(object):
                 plt.xlabel("Time (s)")
                 plt.ylabel("Theta")
                 plt.title("%s Epochs (pendulum length = %s)" % (str(epoch), str(self.l)))
-                plt.savefig("plots/%s_PINN_Epochs.png" % str(epoch))
+                plt.savefig("plots/%s_NN_Epochs.png" % str(epoch))
                 plt.close()
             else:
                 pass
@@ -130,7 +128,7 @@ class PhysicsInformedNN(object):
                 plt.xlabel("Time (s)")
                 plt.ylabel("Theta")
                 plt.title("%s Epochs (Final)" % str(epoch))
-                plt.savefig("plots/PINN_Opt_Completed_%s_Epochs.png" % str(epoch))
+                plt.savefig("plots/NN_Opt_Completed_%s_Epochs.png" % str(epoch))
                 plt.close()
                 break
             else: 
@@ -160,5 +158,4 @@ class PhysicsInformedNN(object):
 
     def predict(self, X_star):
         u_star = self.u_model(X_star)
-        f_star = self.f_model()
-        return u_star, f_star
+        return u_star
