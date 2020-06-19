@@ -1,18 +1,32 @@
 # Physics Informed Machine Learning 
-Our objective is to improve machine learning (ML) methods by devising an algorithm that utilizes the laws of physics. Incorporating physics through auto-differentiation in ML has a number of benefits including the need for less data and the inclusion of well-defined physics equations. This will ultimately increase the rate of convergence and prediction accuracy. This technology will aid in directing research projects in that systems can be better understood through predictions made by physics informed machine learning. 
+Our objective is to improve machine learning (ML) methods by devising an algorithm that utilizes the laws of physics. Incorporating physics through auto-differentiation in ML has a number of benefits including the need for less data and the inclusion of well-defined physics equations. This will ultimately increase the rate of convergence and prediction accuracy. This technology will aid in directing research projects by using informed decision making in a machine learning framework, namely, reinforcement learning.  
 
 This repository is divided into two parts, each of which explore different machine learning approaches. 
 
-#### Part I: Solving the Cartpole Problem Using Reinforcement Learning (RL)
-Reinforcement learning is utilized to train an "agent" and solve the cartpole problem. The problem is considered solved once the agent is capable of making an informed decision to balance the pole upright. 
-![solved cartpole demo](https://github.com/schr476/uw_capstone_2020/tree/master/cartpole_RL/static/solved_cartpole.gif)
+### Part I: Solving the Inverted Pendulum Problem Using Reinforcement Learning (RL)
+OBJECTIVE: Move a cart along a frictionless path such that the balancing pole maintains an upright position. 
+<img src="/cartpole_RL/static/solved_cartpole.gif?raw=true">
+*Components of RL* 
+1. Agent: controls the system by preforming an action 
+2. Action: instructions to manipulate a system 
+3. Environment: response to the action 
+4. State: representation of the environment 
+5. Reward: numerical representation of the agent's decision based on the resulting environment 
+
+To solve the cartpole problem, the agent applies an action on the cart to explore the environment through a "trial-and-error" method. The agent learns the "optimal" action through a reward system using a deep Q-network (DQN). 
+
+We have improved the learning rate and convergence of solving the cartpole problem by implementing an improved reward system that considers the laws of physics. 
+
 
 For more information click [here](https://github.com/schr476/uw_capstone_2020/tree/master/cartpole_RL)
 
-#### Part II: Building a Pendulum Environment Using Supervised Learning (SL)
-In order to implement the pendulum problem in RL, an environment must first be defined to respond to the agent's actions. An environment can be built using supervised learning responding to both a well-defined neural network and auto-differentiation that solve the simple pendulum equation: 
+### Part II: Building a Physics Informed Agent for the Pendulum Problem Using Supervised Learning (SL)
+OBJECTIVE: Apply the appropriate force such that a swinging pendulum reaches and maintains an upright position
+<img src="/pendulum_SL/static/pendulum.gif?raw=true">
+In order to implement the pendulum problem in RL, we first devise a method for building a physics informed agent. This agent is trained through a labeled dataset and the nonlinear second order differential equation to better understand the behavior of the pendulum system.   
 $$\frac{d^2\theta}{d^2t}+\frac{g}{l}\sin\theta=0$$
 
+Once a network has been developed and sufficiently trained, it will be implemented in the RL framework to solve the pendulum problem. 
 
 ## Directory Organization
 ```
@@ -61,6 +75,7 @@ cd uw_capstone_2020
 
 pip install -e . --user
 ```
+
 
 ## References
 * Surma, G. ["Cartpole - Introduction to Reinforcement Learning (DQN - Deep Q-Learning)"](https://towardsdatascience.com/cartpole-introduction-to-reinforcement-learning-ed0eb5b58288)
