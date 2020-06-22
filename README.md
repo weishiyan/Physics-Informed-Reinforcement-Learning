@@ -1,21 +1,23 @@
-# Physics Informed Machine Learning 
+# Physics Informed Machine Learning <img align="right" width="100" src="static/logo.png">
+
+
 Our objective is to improve machine learning (ML) methods by devising an algorithm that utilizes the laws of physics. Incorporating physics through auto-differentiation in ML has a number of benefits including the need for less data and the inclusion of well-defined physics equations. This will ultimately increase the rate of convergence and prediction accuracy. This technology will aid in directing research projects by using informed decision making in a machine learning framework, namely, reinforcement learning.  
 
-This repository is divided into two parts, each of which explore different machine learning approaches. 
+This repository is divided into two parts, each of which explore different machine learning approaches.
 
 ### Part I: Solving the Inverted Pendulum Problem Using Reinforcement Learning (RL)
 OBJECTIVE: Move a cart along a frictionless path such that the balancing pole maintains an upright position. 
 <img src="/cartpole_RL/figures/solved_cartpole.gif?raw=true">
 *Components of RL* 
-1. Agent: controls the system by preforming an action 
-2. Action: instructions to manipulate a system 
-3. Environment: response to the action 
-4. State: representation of the environment 
-5. Reward: numerical representation of the agent's decision based on the resulting environment 
+1. Agent: controls the system by preforming an action
+2. Action: instructions to manipulate a system
+3. Environment: response to the action
+4. State: representation of the environment
+5. Reward: numerical representation of the agent's decision based on the resulting environment
 
-To solve the cartpole problem, the agent applies an action on the cart to explore the environment through a "trial-and-error" method. The agent learns the "optimal" action through a reward system using a deep Q-network (DQN). 
+To solve the cartpole problem, the agent applies an action on the cart to explore the environment through a "trial-and-error" method. The agent learns the "optimal" action through a reward system using a deep Q-network (DQN).
 
-We have improved the learning rate and convergence of solving the cartpole problem by implementing an improved reward system that considers the laws of physics. 
+We have improved the learning rate and convergence of solving the cartpole problem by implementing an improved reward system that considers the laws of physics.
 
 
 For more information click [here](https://github.com/schr476/uw_capstone_2020/tree/master/cartpole_RL)
@@ -26,7 +28,7 @@ OBJECTIVE: Apply the appropriate force such that a swinging pendulum reaches and
 In order to implement the pendulum problem in RL, we first devise a method for building a physics informed agent. This agent is trained through a labeled dataset and the nonlinear second order differential equation to better understand the behavior of the pendulum system.   
 $$\frac{d^2\theta}{d^2t}+\frac{g}{l}\sin\theta=0$$
 
-Once a network has been developed and sufficiently trained, it will be implemented in the RL framework to solve the pendulum problem. 
+Once a network has been developed and sufficiently trained, it will be implemented in the RL framework to solve the pendulum problem.
 
 ## Directory Organization
 ```
@@ -35,7 +37,7 @@ cartpole_RL                            : cartpole problem using reinforcement le
  ├── drivers                           : a folder contains RL steering scripts
  |   └── run_dqn.py                    : steering script to debug changes in the dqn agent using cartpole en
  ├── agents                            : a folder contains agent codes
- |   └── dqn.py                        : agent used for discrete action space 
+ |   └── dqn.py                        : agent used for discrete action space
  ├── cfg                               : a folder contains the agent and environment configuration
  ├── utils                             : a folder contains utilities
 
@@ -49,7 +51,7 @@ pendulum_SL                            : pendulum problem using supervised learn
  │      └ PINNs_pendulum_weishi.ipynb
  ├ pendulum_alexis
  │       ├ data				                : data sets for SL training
- │       ├ lbfgs.py			              : limited memory Broyden-Fletcher-Goldfarb-Shanno optimization algorithm 
+ │       ├ lbfgs.py			              : limited memory Broyden-Fletcher-Goldfarb-Shanno optimization algorithm
  │       ├ logs				                : collected output reports from runs
  │       ├ pinn.py			              : Physics informed neural network (NN) code
  │       ├ plot.py			              : plotting loss and predictions
@@ -63,11 +65,11 @@ docs
   └ use_cases.ipynb
 ```
 ## Software Requirement
-* Python 3.7 
-* The cartpole environment framework and pendulum data set is built using [OpenAI Gym](https://gym.openai.com) 
+* Python 3.7
+* The cartpole environment framework and pendulum data set is built using [OpenAI Gym](https://gym.openai.com)
 * Additional python packages are defined in the setup.py  
 
-## Installing 
+## Installing
 ```
 git clone https://github.com/schr476/uw_capstone_2020.git
 

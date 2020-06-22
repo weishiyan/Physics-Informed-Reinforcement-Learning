@@ -30,7 +30,7 @@ def _time_reward(current_state, env):
 
 # The Deep Q-Network (DQN)
 class DQN:
-    def __init__(self, env, cfg='../cfg/dqn_setup.json'):
+    def __init__(self, env, cfg='./cfg/dqn_setup.json'):
         self.env = env
 
         # Implement the UCB approach

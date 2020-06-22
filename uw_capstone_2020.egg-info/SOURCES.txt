@@ -1,0 +1,7 @@
+README.md
+setup.py
+uw_capstone_2020.egg-info/PKG-INFO
+uw_capstone_2020.egg-info/SOURCES.txt
+uw_capstone_2020.egg-info/dependency_links.txt
+uw_capstone_2020.egg-info/requires.txt
+uw_capstone_2020.egg-info/top_level.txt
