@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 import gym
 from tqdm import tqdm
 import time
 import csv
 import logging
 
-from agents.dqn import DQN
+from cartpole_RL.agents.dqn import DQN
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger('RL-Logger')
@@ -30,8 +29,8 @@ if __name__ == "__main__":
     # Agent setup
     agent = DQN(env)
 
-    # Save infomation
-    filename = "dqn_cartpole_mse_episode%s_memory%s" % (str(EPISODES),
+    # Saving the information to ./data folder
+    filename = "./data/dqn_cartpole_mse_episode%s_memory%s" % (str(EPISODES),
                                                         str(NSTEPS))
     train_file = open(filename, 'w')
     train_writer = csv.writer(train_file, delimiter=" ")
@@ -64,5 +63,6 @@ if __name__ == "__main__":
                                   total_reward, done])
             train_file.flush()
 
-    agent.save("%s.h5" % filename)
+    # Saving the agent information
+    # agent.save("./data/%s.h5" % filename)
     train_file.close()

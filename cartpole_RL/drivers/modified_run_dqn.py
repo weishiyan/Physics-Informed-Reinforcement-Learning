@@ -31,7 +31,7 @@ if __name__ == "__main__":
     # Agent setup
     agent = DQN(env)
 
-    # Save infomation
+    # Saving the information to ./data folder
     reward_method = "RewardInAgent"
     month = time.localtime().tm_mon
     day = time.localtime().tm_mday
@@ -72,5 +72,6 @@ if __name__ == "__main__":
 
         logger.info("Current episode reward: %s " % str(total_reward))
 
-    agent.save(filename+'.h5')
+    # Saving the agent information
+    # agent.save('./data'+filename+'.h5')
     train_file.close()
