@@ -28,6 +28,7 @@ The original agent within looked at only the raw output produced by the environm
 
 <img alt="Picture of the correlation matrix" align="center" src="./pics/Correlation Function for Original Reward Structure All.png">
 <figcaption> <b>Figure 1.</b> Correlation matrix for the cartpole </figcaption>  
+
 The result was noticeable. Figure 2 compares the "Original" reward structure to the "Time" reward structure. As one can see, the time reward structure convergences to a solution around 100 episodes compared to roughly 150 in the Original structure. Furthermore, the stability of the time reward structure is much improved from the original reward structure as one can see from the variability throughout the episodes.
 
 <img alt="Comparison of original and modified reward structure" align="center" src="./pics/Reward_Episode_Original_vs_RewardInAgent_4_28.png">
