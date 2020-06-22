@@ -1,5 +1,0 @@
-gym
-keras
-pandas
-numpy
-tqdm

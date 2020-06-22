@@ -5,7 +5,6 @@ import sys
 
 import Logger
 import pinn
-import nn
 import lbfgs
 import prep_data
 
@@ -65,27 +64,7 @@ def run_pendulum(tf_ep, nt_ep, pendulum_length):
     plt.savefig("plots/PINN_Predicted_Data.png")
     # plt.show()
 
-    # Train with standard neural network
-    nns = nn.NN(
-        layers, tf_optimizer, logger, X_u_train, ub, lb, g, l)
-
-
-    def error():
-        u_pred = nns.predict(X_f)
-        return np.linalg.norm(Exact_u - u_pred, 2) / np.linalg.norm(Exact_u, 2)
-
-    logger.set_error_fn(error)
-    nns.fit(X_u_train, u_train, tf_epochs, nt_config)
-
-    u_pred = nns.predict(X_f)
-
-    plt.scatter(X_f, u_pred, marker='.',c='r')
-    plt.xlabel("Time (s)")
-    plt.ylabel("Theta")
-    plt.title("Predicted Data from Physics Informed Neural Network")
-    plt.savefig("plots/NN_Predicted_Data.png")
-    # plt.show()
-
+    
 
 tf_eps = sys.argv[1]
 nt_eps = sys.argv[2]
