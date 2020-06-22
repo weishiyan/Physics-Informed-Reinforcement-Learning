@@ -4,8 +4,9 @@ from tqdm import tqdm
 import time
 import csv
 import logging
+import sys
 
-from agents.modified_dqn import DQN
+from cartpole_RL.agents.modified_dqn import DQN
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger('RL-Logger')
