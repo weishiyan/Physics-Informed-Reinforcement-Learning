@@ -27,13 +27,10 @@ The environment outputs an "Observation" every time an "Action" is made. For thi
 The original agent within looked at only the raw output produced by the environment, which included the simple binary reward structure. Improvements to this reward structure was made in the modified agent, where the elementary physics equations came in handy. The equation we used was the `acceleration * time = final_velocity - initial_velocity`. We applied this equation to both theta values and x values to calculate time for both components. For example, `x_dot * x_time = final_x - initial_x`, allowed us to calculate the `x_time`. To explain further, `x_time` in this case would be the time required to reach the `final_x`, which is the constraint set by the environment, from `initial_x`, the current position. This meant that action resulting in greatest `x_time` should be favored since it allows the model to balance the cartpole the longest. Same approach was applied to `theta` allowing us to retrieve `theta_time`. These two variables, `x_time` and `theta_time`, were used to calculate the reward with the use of tanh. The resulting values were then weighted to reflect the correlation coefficients. Correlation coefficients were calculated, as seen in figure 1, to investigate the impact of each variable. Absolute value of these coefficients were added to calculate the percentage for x and theta, which resulted in 0.3 and 0.7.
 
 <img alt="Picture of the correlation matrix" align="center" src="./pics/Correlation Function for Original Reward Structure All.png">
-<figcaption> <b>Figure 1.</b> Correlation matrix for the cartpole </figcaption>
-<br/>
-
+<figcaption> <b>Figure 1.</b> Correlation matrix for the cartpole </figcaption>  
 The result was noticeable. Figure 2 compares the "Original" reward structure to the "Time" reward structure. As one can see, the time reward structure convergences to a solution around 100 episodes compared to roughly 150 in the Original structure. Furthermore, the stability of the time reward structure is much improved from the original reward structure as one can see from the variability throughout the episodes.
 
 <img alt="Comparison of original and modified reward structure" align="center" src="./pics/Reward_Episode_Original_vs_RewardInAgent_4_28.png">
 <figcaption> <b>Figure 2. </b> Comparison of original and modified reward structure </figcaption>
 <br/>
-
 Now, our solution is not perfect. As we can see around 450 episodes, we still observe drops in performance and our convergence could be much faster. However, focus on the actual network architecture may provide greater improvements than modification of the reward structure. In conclusion, the incorporation of physics into the reward structure of the reinforcement learning greatly increased performance and stability of the model. Use of this technique into other networks may provide significant increase in performance as well.
