@@ -6,9 +6,11 @@ Our objective is to improve machine learning (ML) methods by devising an algorit
 This repository is divided into two parts, each of which explore different machine learning approaches.
 
 ### Part I: Solving the Inverted Pendulum Problem Using Reinforcement Learning (RL)
-OBJECTIVE: Move a cart along a frictionless path such that the balancing pole maintains an upright position. 
-<img src="/cartpole_RL/figures/solved_cartpole.gif?raw=true">
-*Components of RL* 
+OBJECTIVE: Move a cart along a frictionless path such that the balancing pole maintains an upright position.
+<img src="./cartpole_RL/figures/solved_cartpole.gif?raw=true">
+
+
+*Components of RL*
 1. Agent: controls the system by preforming an action
 2. Action: instructions to manipulate a system
 3. Environment: response to the action
@@ -24,9 +26,11 @@ For more information click [here](https://github.com/schr476/uw_capstone_2020/tr
 
 ### Part II: Building a Physics Informed Agent for the Pendulum Problem Using Supervised Learning (SL)
 OBJECTIVE: Apply the appropriate force such that a swinging pendulum reaches and maintains an upright position
-<img src="/pendulum_SL/figures/pendulum.gif?raw=true">
+<img src="./pendulum_SL/figures/pendulum.gif?raw=true">
+
+
 In order to implement the pendulum problem in RL, we first devise a method for building a physics informed agent. This agent is trained through a labeled dataset and the nonlinear second order differential equation to better understand the behavior of the pendulum system.   
-$$\frac{d^2\theta}{d^2t}+\frac{g}{l}\sin\theta=0$$
+<img src="https://latex.codecogs.com/gif.latex?\frac{d^{2}\Theta}{dt^{2}}&space;&plus;&space;\frac{g}{l}sin(\Theta&space;)&space;=0" title="\frac{d^{2}\Theta}{dt^{2}} + \frac{g}{l}sin(\Theta ) =0" /></a>
 
 Once a network has been developed and sufficiently trained, it will be implemented in the RL framework to solve the pendulum problem.
 
