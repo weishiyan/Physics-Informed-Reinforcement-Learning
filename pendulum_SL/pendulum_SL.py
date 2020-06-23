@@ -51,7 +51,7 @@ def run_pendulum(network, tf_ep, pendulum_length):
         plt.savefig("plots/PINN_Predicted_Data.png")
     # Train without physics
     else:
-        nns = nn.PhysicsInformedNN(
+        nns = nn.NN(
             layers, tf_optimizer, logger, X_u_train, ub, lb, g, length)
 
         def error():

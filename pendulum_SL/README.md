@@ -1,7 +1,7 @@
-# Building a Physics Informed Agent Using Supervised Learning
-(include short description of what is happening here)
-### Overview
-(talk about lbfgs vs tf)
+# Building a Physics Informed Neural Network (PINN) Model
+
+A PINN is used to create a model suitable for solving the pendulum problem. The model is developed using traditonal machine learning techniques in addition to known physics defined by partial differential equations.  
+
 ### Getting Started
 
 Navigate to the *pendulum_SL* directory:
@@ -9,29 +9,23 @@ Navigate to the *pendulum_SL* directory:
 `$ cd pendulum_SL/`
 
 To begin running, 
-1. define the neural network type
-        nn = standard neural network
-        pinn = physics informed neural network
-2. explicity define the number of epochs to run (must be an integer)
-3. select the dataset 
+1. Define the neural network model type
+        nn = standard neural network optimizes based off of MSE from NN model
+        pinn = physics informed neural network optimizes based off of MSE from both NN and PINN model
+2. Explicity define the number of epochs to run (must be an integer)
+3. Select the dataset used for training
         50 = pendulum length of 50 (as defined by openAI)
         100 = pendulum length of 100 (as defined by openAI)
 
 `$ python pendulum_SL.py <nn or pinn> <num epochs> <50 or 100>`
 
-Setting either of these values to zero will skip the method
 
-For example:
+For example, the following line will run the physics informed neural network algorithm for 500 epochs on the dataset following the oscillation of a pendulum with a length of 50
+`$ python pendulum_SL.py pinn 500 50` 
+A series of plots will be printed to the *plots* directory showing results after every 50 epochs. 
 
-`$ python pendulum_SL.py pinn 500 100` 
-
-will run the physics informed neural network algorithm for 500 epochs on the dataset following the oscillation of a pendulum with a length of 100
-
-To clean up the *plots* directory run
+To remove plots from the *plots* directory run:
 
 `$ python clean_dir.py`
 
-****EDIT README (this is a rough draft)
-1. Include description of plots that are saved in the plots directory (maybe show examples here)
-2. give description of data sets in data directory
 

@@ -2,7 +2,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 
 
-class PhysicsInformedNN(object):
+class NN(object):
     def __init__(self, layers, optimizer, logger, X_f, ub, lb, g, l):
         self.u_model = tf.keras.Sequential()
         self.u_model.add(tf.keras.layers.InputLayer(input_shape=(layers[0],)))
