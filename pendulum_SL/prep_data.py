@@ -3,9 +3,7 @@ import matplotlib.pyplot as plt
 
 
 def prep_data(dataset, N_u, N_f, noise=0.1):
-    npz = np.load(
-        '%s' % dataset,
-        allow_pickle=True)
+    npz = np.load('%s' % dataset, allow_pickle=True)
     # 50000 states of the pendulum
     states_data = npz['states']
     # 50000 corresponding times for each state of the pendulum

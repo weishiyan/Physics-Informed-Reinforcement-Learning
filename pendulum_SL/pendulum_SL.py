@@ -14,9 +14,9 @@ def run_pendulum(network, tf_ep, pendulum_length):
     g = 10.0  # default gravity value in openAI
     length = float(pendulum_length)
     # Data size on the solution u
-    N_u = 500
+    N_u = 1000
     # Collocation points size, where we’ll check for f = 0
-    N_f = 600
+    N_f = 1500
     # DeepNN 1-sized input [t], 8 hidden layer of 20-width, 1-sized output [u]
     layers = [1, 80, 80, 80, 80, 80, 80, 80, 80, 1]
     # Setting up the TF SGD-based optimizer (set tf_epochs=0 to cancel it)
@@ -68,7 +68,6 @@ def run_pendulum(network, tf_ep, pendulum_length):
         plt.savefig("plots/NN_Predicted_Data.png")
         # plt.show()
         pass
-
 
 nnetwork = sys.argv[1]
 tf_eps = sys.argv[2]
