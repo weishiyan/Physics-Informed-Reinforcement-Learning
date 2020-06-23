@@ -95,13 +95,18 @@ class PhysicsInformedNN(object):
         X_u = tf.convert_to_tensor(X_u, dtype=self.dtype)
         u = tf.convert_to_tensor(u, dtype=self.dtype)
         self.logger.log_train_opt("Adam")
+
+        # Determining the number of images to output
+        fps = 24
+        time = 10
+        mod = int(tf_epochs / (fps * time))
         for epoch in range(tf_epochs):
             # Optimization step
             loss_value, grads = self.__grad(X_u, u)
             self.optimizer.apply_gradients(
                 zip(grads, self.u_model.trainable_variables))
             self.logger.log_train_epoch(epoch, loss_value)
-            if epoch % 50 == 0:
+            if epoch % mod == 0:
                 plt.clf()
                 x = X_u
                 exact = u
@@ -113,7 +118,7 @@ class PhysicsInformedNN(object):
                 plt.ylabel("Theta")
                 plt.title("%s Epochs (pendulum length = %s)" % (
                     str(epoch), str(self.len)))
-                plt.savefig("plots/%s_PINN_Epochs.png" % str(epoch))
+                plt.savefig("plots/%s_PINN_Epochs.png" % str(epoch), dpi=300)
                 plt.close()
             else:
                 pass
