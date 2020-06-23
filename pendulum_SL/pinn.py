@@ -32,7 +32,7 @@ class PhysicsInformedNN(object):
     def __loss(self, u, u_pred):
         f_pred = self.f_model()
         return tf.reduce_sum(
-            tf.square(u - u_pred)) + tf.reduce_mean(tf.square(f_pred))
+            tf.square(u - u_pred)) # + tf.reduce_mean(tf.square(f_pred))
 
     def __grad(self, X, u):
         with tf.GradientTape() as tape:
@@ -133,7 +133,7 @@ class PhysicsInformedNN(object):
                 plt.savefig("plots/PINN_Opt_Completed_%s_Epochs.png" % str(epoch))
                 plt.close()
                 break
-            else: 
+            else:
                 pass
             old_loss = loss_value
 

@@ -11,15 +11,15 @@ import prep_data
 
 def run_pendulum(tf_ep, nt_ep, pendulum_length):
     dataset = 'data/single_action_2_pendulum_data_L%s.npz' % pendulum_length
-    g = 10.0 # default gravity value in openAI 
+    g = 10.0 # default gravity value in openAI
     #split_string = dataset.split('_')
     #split_string = split_string[-1].split('.')
     #length = split_string[0].replace('L','')
     l = float(pendulum_length)
     # Data size on the solution u
-    N_u = 500
+    N_u = 1000
     # Collocation points size, where we’ll check for f = 0
-    N_f = 600
+    N_f = 1500
     # DeepNN 1-sized input [t], 8 hidden layer of 20-width, 1-sized output [u]
     layers = [1, 80, 80, 80, 80, 80, 80, 80, 80, 1]
     # Setting up the TF SGD-based optimizer (set tf_epochs=0 to cancel it)
@@ -64,7 +64,7 @@ def run_pendulum(tf_ep, nt_ep, pendulum_length):
     plt.savefig("plots/PINN_Predicted_Data.png")
     # plt.show()
 
-    
+
 
 tf_eps = sys.argv[1]
 nt_eps = sys.argv[2]
