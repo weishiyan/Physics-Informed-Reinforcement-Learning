@@ -4,15 +4,13 @@ import matplotlib.pyplot as plt
 
 class PhysicsInformedNN(object):
     def __init__(self, layers, optimizer, logger, X_f, ub, lb, g, l):
-        # Descriptive Keras model [1, 20, …, 20, 1]
         self.u_model = tf.keras.Sequential()
         self.u_model.add(tf.keras.layers.InputLayer(input_shape=(layers[0],)))
-        self.u_model.add(
-            tf.keras.layers.Lambda(lambda X: 2.0*(X - lb)/(ub - lb) - 1.0))
         for width in layers[1:]:
             self.u_model.add(tf.keras.layers.Dense(
               width, activation=tf.nn.tanh,
               kernel_initializer='glorot_normal'))
+
         # Computing the sizes of weights/biases for future decomposition
         self.sizes_w = []
         self.sizes_b = []
@@ -24,24 +22,18 @@ class PhysicsInformedNN(object):
         self.nu = g/l
         self.optimizer = optimizer
         self.logger = logger
-        self.tolX = 5e-2
         self.dtype = tf.float32
         self.t_f = tf.convert_to_tensor(X_f, dtype=self.dtype)
 
+    # Defining custom loss
     def __loss(self, u, u_pred):
-        f_pred = self.f_model()
-        return tf.reduce_sum(
-            tf.square(u - u_pred)) # + tf.reduce_mean(tf.square(f_pred))
+        return tf.reduce_sum(tf.square(u - u_pred))
 
     def __grad(self, X, u):
         with tf.GradientTape() as tape:
             loss_value = self.__loss(u, self.u_model(X))
         return loss_value, tape.gradient(
-            loss_value, self.__wrap_training_variables())
-
-    def __wrap_training_variables(self):
-        var = self.u_model.trainable_variables
-        return var
+            loss_value, self.u_model.trainable_variables)
 
     # The actual PINN
     def f_model(self):
@@ -52,17 +44,17 @@ class PhysicsInformedNN(object):
             tape.watch(self.t_f)
             # Getting the prediction
             u = self.u_model(self.t_f)
+            # Deriving INSIDE the tape
+            # (since we’ll need the t derivative of this later, u_tt)
             u_t = tape.gradient(u, self.t_f)
 
         # Getting the other derivatives
         u_tt = tape.gradient(u_t, self.t_f)
-        nu = self.get_params(numpy=True)
 
-        # Buidling the PINNs... assuming small angle approx.
-        return nu*(u) + u_tt
+        del tape
 
-    def get_params(self, numpy=False):
-        return self.nu
+        # Buidling the PINNs
+        return u_tt + 10.*u
 
     def get_weights(self):
         w = []
@@ -88,6 +80,7 @@ class PhysicsInformedNN(object):
     def summary(self):
         return self.u_model.summary()
 
+    # The training function
     def fit(self, X_u, u, tf_epochs=5000):
         self.logger.log_train_start(self)
 
@@ -103,36 +96,14 @@ class PhysicsInformedNN(object):
             self.logger.log_train_epoch(epoch, loss_value)
             if epoch % 50 == 0:
                 plt.clf()
-                x = X_u
-                exact = u
-                predict = self.u_model(X_u)
-                ratio = 1
-                plt.scatter(x, exact, marker='.')
-                plt.scatter(x, ratio*predict, marker='.')
+                plt.scatter(X_u, u, marker='.')
+                plt.scatter(X_u, self.u_model(X_u), marker='.')
                 plt.xlabel("Time (s)")
                 plt.ylabel("Theta")
                 plt.title("%s Epochs (pendulum length = %s)" % (
                     str(epoch), str(self.len)))
-                plt.savefig("plots/%s_PINN_Epochs.png" % str(epoch))
+                plt.savefig("plots/%s_NN_Epochs.png" % str(epoch))
                 plt.close()
-            else:
-                pass
-            if tf.abs(loss_value) < self.tolX:
-                plt.clf()
-                x = X_u
-                exact = u
-                predict = self.u_model(X_u)
-                ratio = 1
-
-                plt.scatter(x, exact, marker='.')
-                plt.scatter(x, ratio*predict, marker='.')
-                plt.xlabel("Time (s)")
-                plt.ylabel("Theta")
-                plt.title("%s Epochs (Final)" % str(epoch))
-                plt.savefig(
-                    "plots/PINN_Opt_Completed_%s_Epochs.png" % str(epoch))
-                plt.close()
-                break
             else:
                 pass
         self.logger.log_train_end(tf_epochs)

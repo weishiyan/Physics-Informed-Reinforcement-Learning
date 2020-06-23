@@ -24,6 +24,6 @@ def prep_data(dataset, N_u, N_f, noise=0.1):
     plt.title("Training Dataset")
     plt.ylabel("Theta")
     plt.xlabel("Time (s)")
-    plt.scatter(X_u_train, u_train, marker='.',c='g')
+    plt.scatter(X_u_train, u_train, marker='.', c='g')
     plt.savefig("plots/Training_Dataset.png")
     return X_f, Exact_u, X_u_train, u_train, lb, ub
