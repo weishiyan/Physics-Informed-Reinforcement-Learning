@@ -21,7 +21,9 @@ To begin running,
 
 
 For example, the following line will run the physics informed neural network algorithm for 500 epochs on the dataset following the oscillation of a pendulum with a length of 50
+
 `$ python pendulum_SL.py pinn 500 50` 
+
 A series of plots will be printed to the *plots* directory showing results after every 50 epochs. 
 
 To remove plots from the *plots* directory run:
