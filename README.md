@@ -79,7 +79,7 @@ git clone https://github.com/schr476/uw_capstone_2020.git
 
 cd uw_capstone_2020
 
-pip install -e . --user
+pip install -e .
 ```
 
 
